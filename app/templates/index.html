@@ -21,40 +21,47 @@
         {% include '_user.html' %}
     {% endfor %}
     {% if current_user.is_authenticated %}
-        {% if current_user.user_cat=='admin'}
+        {% if current_user.user_cat == 'admin' %}
             <form method="post">
                 <input type="submit" class="btn btn-info" value="Add User" name="Add User">
                 <a href="{{ url_for('add_user') }}">
+                <input type="submit" class="btn btn-info" value="Add Procedure" name="Add Procedure">
+                <a href="{{ url_for('add_procedure') }}">
+                <input type="submit" class="btn btn-info" value="Add Physician" name="Add Physician">
+                <a href="{{ url_for('add_physician') }}">
+                <input type="submit" class="btn btn-info" value="Add Department" name="Add Department">
+                <a href="{{ url_for('add_department') }}">
+                <input type="submit" class="btn btn-info" value="Add Medication" name="Add Medication">
+                <a href="{{ url_for('add_medication') }}"></a>
+                <input type="submit" class="btn btn-info" value="Add Room" name="Add Room">
+                <a href="{{ url_for('add_room') }}">
+                <input type="submit" class="btn btn-info" value="Add Nurse" name="Add Nurse">
+                <a href="{{ url_for('add_nurse') }}">
+                <input type="submit" class="btn btn-info" value="Add Affiliation" name="Add Affiliation">
+                <a href="{{ url_for('add_affiliation') }}">
+                <input type="submit" class="btn btn-info" value="Add Training" name="Add Training">
+                <a href="{{ url_for('add_training') }}">
                 <input type="submit" class="btn btn-info" value="View Users" name="View Users">
             </form>
         {% endif %}
-        <!-- {% if current_user.user_cat!='user' %}
-            {% for order,movie in order_list %}
-                {% include '_order.html' %}
-            {% endfor %}
+        {% if current_user.user_cat == 'front_desk' %}
             <form method="post">
-                <input type="submit" class="btn btn-info" value="Add Movie" name="Add Movie">
-                <a href="{{ url_for('add_stock') }}">
-                <input type="button" class="btn btn-info" value="Add Stock" name="Add Stock">
-                </a>
-                {% if current_user.user_cat=='manager' %}
-                <input type="submit" class="btn btn-info" value="View Users" name="View Users">
-                <input type="submit" class="btn btn-info" value="View Staff" name="View Staff">
-                <input type="submit" class="btn btn-info" value="Audit" name="Audit">
-                {% endif %} 
-                {% if current_user.user_cat=='staff' %}
-                <input type="submit" class="btn btn-info" value="View Users" name="View Users">
-                {% endif %}
+                <input type="submit" class="btn btn-info" value="Register Patient" name="Register Patient">
+                <a href="{{ url_for('register_patient') }}">
+                <input type="submit" class="btn btn-info" value="Admit Patient" name="Admit Patient">
+                <a href="{{ url_for('admit_patient') }}">
+                <input type="submit" class="btn btn-info" value="Discharge Patient" name="Discharge Patient">
+                <a href="{{ url_for('discharge_patient') }}">
+                <input type="submit" class="btn btn-info" value="Schedule Appointment" name="Schedule Appointment">
+                <a href="{{ url_for('schedule_appointment') }}">
             </form>
-        {% else %}
-            <form method="post" >
-                {% for order,movie in order_list %}
-                    {% include '_order.html' %}
-                {% endfor %}
-                <input type="submit" class="btn btn-info" value="View Orders" name="View Orders">
-                <input type="submit" class="btn btn-info" value="View Deadlines" name="View Deadlines">
+        {% endif %}
+        {% if current_user.user_cat == 'data_entry' %}
+            <form method="post">
+                <input type="submit" class="btn btn-info" value="Add results and prescriptions" name="Add results and prescriptions">
+                <a href="{{ url_for('add_results_prescriptions') }}">
             </form>
-        {% endif %} -->
+        {% endif %}
     {% endif %} 
     
 {% endblock %}

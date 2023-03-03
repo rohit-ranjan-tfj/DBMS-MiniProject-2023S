@@ -11,6 +11,7 @@ from app.models import *
 from app.email import send_password_reset_email
 from app.functions import *
 from flask import g
+from datetime import datetime
 
 # Required setup for the search bar.
 @app.before_request
@@ -28,10 +29,29 @@ def before_request():
 def index_admin():
     if request.form.get('Add User') == 'Add User':
         return redirect(url_for('add_user'))
+    
+    if request.form.get('Add Procedure') == 'Add Procedure':
+        return redirect(url_for('add_procedure'))
+    
+    if request.form.get('Add Department') == 'Add Department':
+        return redirect(url_for('add_department'))
+
+    if request.form.get('Add Physician') == 'Add Physician':
+        return redirect(url_for('add_physician'))
+    
+    if request.form.get('Add Medication') == 'Add Medication':
+        return redirect(url_for('add_medication'))
+    
+    if request.form.get('Add Room') == 'Add Room':
+        return redirect(url_for('add_room'))
+    
+    if request.form.get('Add Nurse') == 'Add Nurse':
+        return redirect(url_for('add_nurse'))
+    
 
     if request.form.get('View Users') == 'View Users':
         page = request.args.get('page', 1, type=int)
-        users = User.query.filter_by(user_cat!='admin').paginate(
+        users = User.query.filter(User.user_cat != 'admin').paginate(
             page, app.config['USERS_PER_PAGE'], False)
         next_url = url_for('explore', page=users.next_num) \
             if users.has_next else None
@@ -50,6 +70,164 @@ def index_admin():
             flash('User not found.')
     
     return render_template('index.html', title='Home')
+
+# Dashboard for front_desk user.
+@app.route('/index_front_desk', methods=['GET', 'POST'])
+@login_required
+def index_front_desk():
+    if request.form.get('Register Patient') == 'Register Patient':
+        return redirect(url_for('register_patient'))
+    
+    if request.form.get('Admit Patient') == 'Admit Patient':
+        return redirect(url_for('admit_patient'))
+    
+    if request.form.get('Schedule Appointment') == 'Schedule Appointment':
+        return redirect(url_for('schedule_appointment'))
+    
+    if request.form.get('Discharge Patient') == 'Discharge Patient':
+        return redirect(url_for('discharge_patient'))
+    
+    return render_template('index.html', title='Home')
+
+# Dashboard for data_entry user.
+@app.route('/index_data_entry', methods=['GET', 'POST'])
+@login_required
+def index_data_entry():
+    if request.form.get('Add results and prescriptions') == 'Add results and prescriptions':
+        return redirect(url_for('add_results_prescriptions'))
+    
+    return render_template('index.html', title='Home')
+
+@app.route('/add_results_prescriptions', methods=['GET', 'POST'])
+@login_required
+def add_results_prescriptions():
+    if request.form.get('Back to Dashboard') == 'Dashboard':
+        return redirect(url_for('index'+"_" + current_user.user_cat))
+    form = AddResultsPrescriptionsForm()
+    if form.validate_on_submit():
+        prescribes = Prescribes(Physician = form.physician.data, Patient = form.patient.data, Medication = form.medication.data, Dose = form.dose.data, Date = form.date.data, Appointment = form.appointment.data, Report = form.report.data)
+        try:
+            db.session.add(prescribes)
+            db.session.commit()
+        except:
+            db.session.rollback()
+            flash('Error!')
+            return redirect(url_for('add_results_prescriptions'))
+        flash('Results and prescriptions added!')
+        return redirect(url_for('add_results_prescriptions'))
+    return render_template('add_data.html', title='Home', form=form)
+
+@app.route('/register_patient', methods=['GET', 'POST']) 
+@login_required
+def register_patient():
+    if request.form.get('Back to Dashboard') == 'Dashboard':
+        return redirect(url_for('index'+"_" + current_user.user_cat))
+    form = RegisterPatientForm()
+    if form.validate_on_submit():
+
+        proc = Patient(SSN=form.SSN.data, Name=form.name.data, Address=form.address.data, Phone = form.phone.data, InsuranceID = form.insuranceID.data, PCP=form.PCP.data)
+        try:
+            db.session.add(proc)
+            db.session.commit()
+        except:
+            db.session.rollback()
+            flash('Patient already exists!')
+            return redirect(url_for('register_patient'))
+        flash('Congratulations, patient has been registered!')
+        return redirect(url_for('register_patient'))
+    return render_template('add_data.html', title='Home', form=form)
+
+@app.route('/admit_patient', methods=['GET', 'POST'])
+@login_required
+def admit_patient():
+    if request.form.get('Back to Dashboard') == 'Dashboard':
+        return redirect(url_for('index'+"_" + current_user.user_cat))
+    form = AdmitPatientForm()
+    if form.validate_on_submit():
+        stay = Stay(StayID=form.stay.data ,Patient=form.patient.data,Room=form.room.data,Start=form.start.data)
+        undergoes = Undergoes(Patient=form.patient.data ,Procedure_=form.procedure.data,Stay=form.stay.data,Date=form.start.data,Physician=form.physician.data,AssistingNurse=form.assistingNurse.data)
+        room = Room.query.filter_by(Number = form.room.data).first()
+        if(room.Unavailable == 1):
+            flash('Room is unavailable!')
+            return redirect(url_for('admit_patient'))
+        room.Unavailable = 1
+
+        try:
+            db.session.add(stay)
+            db.session.add(undergoes)
+            db.session.commit()
+        except:
+            db.session.rollback()
+            flash('Error, patient has not been admitted!')
+            return redirect(url_for('admit_patient'))
+        
+        flash('Congratulations, patient has been admitted!')
+        return redirect(url_for('admit_patient'))
+    return render_template('add_data.html', title='Home', form=form)
+
+@app.route('/schedule_appointment', methods=['GET', 'POST'])
+@login_required
+def schedule_appointment():
+    if request.form.get('Back to Dashboard') == 'Dashboard':
+        return redirect(url_for('index'+"_" + current_user.user_cat))
+    form = ScheduleAppointmentForm()
+    if form.validate_on_submit():
+        appointment = Appointment(AppointmentID = form.appointmentID.data, Patient = form.patient.data, PrepNurse = form.prepNurse.data, Physician = form.physician.data, Start = form.start.data, End = form.end.data)
+        if(form.start.data < datetime.now()):
+            flash('Error, appointment has not been scheduled, date must be today or later!' + str(form.date.data) + " " + str(date.today()))
+            return redirect(url_for('schedule_appointment'))
+        if(form.start.data >= form.end.data):
+            flash('Error, appointment has not been scheduled, start time must be before end time!')
+            return redirect(url_for('schedule_appointment'))
+        earlier_appointment_patient_s = Appointment.query.filter(Appointment.Patient == form.patient.data).filter(Appointment.Start >= form.start.data).filter(Appointment.Start <= form.end.data).first()
+        earlier_appointment_physician_s = Appointment.query.filter(Appointment.Physician == form.physician.data).filter(Appointment.Start >= form.start.data).filter(Appointment.Start <= form.end.data).first()
+        earlier_appointment_patient_e = Appointment.query.filter(Appointment.Patient == form.patient.data).filter(Appointment.End >= form.start.data).filter(Appointment.End <= form.end.data).first()
+        earlier_appointment_physician_e = Appointment.query.filter(Appointment.Physician == form.physician.data).filter(Appointment.End >= form.start.data).filter(Appointment.End <= form.end.data).first()
+        if(earlier_appointment_patient_s is not None):
+            flash('Error, appointment has not been scheduled, patient has another appointment!')
+            return redirect(url_for('schedule_appointment'))
+        if(earlier_appointment_patient_e is not None):
+            flash('Error, appointment has not been scheduled, patient has another appointment!')
+            return redirect(url_for('schedule_appointment'))
+        if(earlier_appointment_physician_s is not None):
+            flash('Error, appointment has not been scheduled, physician has another appointment!')
+            return redirect(url_for('schedule_appointment'))
+        if(earlier_appointment_physician_e is not None):
+            flash('Error, appointment has not been scheduled, physician has another appointment!')
+            return redirect(url_for('schedule_appointment'))
+        try:
+            db.session.add(appointment)
+            db.session.commit()
+        except:
+            db.session.rollback()
+            flash('Error, appointment has not been scheduled!')
+            return redirect(url_for('schedule_appointment'))
+        flash('Congratulations, appointment has been scheduled!')
+        return redirect(url_for('schedule_appointment'))
+    return render_template('add_data.html', title='Home', form=form)
+
+@app.route('/discharge_patient', methods=['GET', 'POST'])
+@login_required
+def discharge_patient():
+    if request.form.get('Back to Dashboard') == 'Dashboard':
+        return redirect(url_for('index'+"_" + current_user.user_cat))
+    form = DischargePatientForm()
+    if form.validate_on_submit():
+        stay = Stay.query.filter_by(StayID = form.stay.data).first()
+        if(stay is None):
+            flash('Stay not found!')
+            return redirect(url_for('discharge_patient'))
+        if(stay.End is not None):
+            flash('Patient has already been discharged!')
+            return redirect(url_for('discharge_patient'))
+        stay.End = form.end.data
+        room = Room.query.filter_by(Number = stay.Room).first()
+        room.Unavailable = 0
+        db.session.commit()
+        flash('Congratulations, patient has been discharged!')
+        return redirect(url_for('discharge_patient'))
+    return render_template('add_data.html', title='Home', form=form)
+
 
 # # Dashboard for front_desk user.
 # @app.route('/index_front_desk', methods=['GET', 'POST'])
@@ -507,7 +685,7 @@ def user(username):
 # Add user page.
 @app.route('/add_user', methods=['GET', 'POST'])
 @login_required
-def add_movie():
+def add_user():
     if request.form.get('Back to Dashboard') == 'Dashboard':
         return redirect(url_for('index'+"_" + current_user.user_cat))
     form = UserForm()
@@ -515,11 +693,177 @@ def add_movie():
 
         user = User(username=form.username.data, email=form.email.data, user_cat=form.user_cat.data)
         user.set_password(form.password.data)
-        db.session.add(user)
-        db.session.commit()
+        try:
+            db.session.add(user)
+            db.session.commit()
+        except:
+            db.session.rollback()
+            flash('Username or email already exists')
+            return redirect(url_for('add_user'))
         flash('Congratulations, user has been added!')
         return redirect(url_for('add_user'))
-    return render_template('add_user.html', title='Home', form=form)
+    return render_template('add_data.html', title='Home', form=form)
+
+# Add procedure page.
+@app.route('/add_procedure', methods=['GET', 'POST'])
+@login_required
+def add_procedure():
+    if request.form.get('Back to Dashboard') == 'Dashboard':
+        return redirect(url_for('index'+"_" + current_user.user_cat))
+    form = AddProcedureForm()
+    if form.validate_on_submit():
+
+        proc = Procedure_(Code=form.code.data, Name=form.name.data, Cost=form.cost.data)
+        try:
+            db.session.add(proc)
+            db.session.commit()
+        except:
+            db.session.rollback()
+            flash('Procedure already exists')
+            return redirect(url_for('add_procedure'))
+        flash('Congratulations, procedure has been added!')
+        return redirect(url_for('add_procedure'))
+    return render_template('add_data.html', title='Home', form=form)
+
+@app.route('/add_department', methods=['GET', 'POST'])
+@login_required
+def add_department():
+    if request.form.get('Back to Dashboard') == 'Dashboard':
+        return redirect(url_for('index'+"_" + current_user.user_cat))
+    form = AddDepartmentForm()
+    if form.validate_on_submit():
+
+        proc = Department(DepartmentID=form.departmentID.data, Name=form.name.data, Head=form.head.data)
+        try:
+            db.session.add(proc)
+            db.session.commit()
+        except:
+            db.session.rollback()
+            flash('Error adding department')
+            return redirect(url_for('add_department'))
+        flash('Congratulations, deaprtment has been added!')
+        return redirect(url_for('add_department'))
+    return render_template('add_data.html', title='Home', form=form)
+
+@app.route('/add_medication', methods=['GET', 'POST'])
+@login_required
+def add_medication():
+    if request.form.get('Back to Dashboard') == 'Dashboard':
+        return redirect(url_for('index'+"_" + current_user.user_cat))
+    form = AddMedicationForm()
+    if form.validate_on_submit():
+
+        proc = Medication(Code = form.code.data, Name = form.name.data, Brand = form.brand.data, Description = form.description.data)
+        try:
+            db.session.add(proc)
+            db.session.commit()
+        except:
+            db.session.rollback()
+            flash('Error adding medication')
+            return redirect(url_for('add_medication'))
+        flash('Congratulations, medication has been added!')
+        return redirect(url_for('add_medication'))
+    return render_template('add_data.html', title='Home', form=form)
+
+@app.route('/add_affiliation', methods=['GET', 'POST'])
+@login_required
+def add_affiliation():
+    if request.form.get('Back to Dashboard') == 'Dashboard':
+        return redirect(url_for('index'+"_" + current_user.user_cat))
+    form = AddAffiliationForm()
+    if form.validate_on_submit():
+
+        proc = Affiliated_with(Physician=form.physician.data, Department = form.department.data, PrimaryAffiliation = form.primaryAffiliation.data)
+        try:
+            db.session.add(proc)
+            db.session.commit()
+        except:
+            db.session.rollback()
+            flash('Error adding affiliation')
+            return redirect(url_for('add_affiliation'))
+        flash('Congratulations, affiliation has been added!')
+        return redirect(url_for('add_affiliation'))
+    return render_template('add_data.html', title='Home', form=form)
+
+@app.route('/add_training', methods=['GET', 'POST'])
+@login_required
+def add_training():
+    if request.form.get('Back to Dashboard') == 'Dashboard':
+        return redirect(url_for('index'+"_" + current_user.user_cat))
+    form = AddTrainingForm()
+    if form.validate_on_submit():
+
+        proc = Trained_In(Physician=form.physician.data, Treatment = form.treatment.data, CertificationDate = form.certificationDate.data, CertificationExpires = form.certificationExpires.data)
+        try:
+            db.session.add(proc)
+            db.session.commit()
+        except:
+            db.session.rollback()
+            flash('Error adding training')
+            return redirect(url_for('add_training'))
+        flash('Congratulations, training has been added!')
+        return redirect(url_for('add_training'))
+    return render_template('add_data.html', title='Home', form=form)
+
+@app.route('/add_physician', methods=['GET', 'POST'])
+@login_required
+def add_physician():
+    if request.form.get('Back to Dashboard') == 'Dashboard':
+        return redirect(url_for('index'+"_" + current_user.user_cat))
+    form = AddPhysicianForm()
+    if form.validate_on_submit():
+
+        proc = Physician(EmployeeID=form.employeeID.data, Name=form.name.data, Position=form.position.data, SSN = form.SSN.data)
+        try:
+            db.session.add(proc)
+            db.session.commit()
+        except:
+            db.session.rollback()
+            flash('Error adding physician')
+            return redirect(url_for('add_physician'))
+        flash('Congratulations, physician has been added!')
+        return redirect(url_for('add_procedure'))
+    return render_template('add_data.html', title='Home', form=form)
+
+@app.route('/add_room', methods=['GET', 'POST'])
+@login_required
+def add_room():
+    if request.form.get('Back to Dashboard') == 'Dashboard':
+        return redirect(url_for('index'+"_" + current_user.user_cat))
+    form = AddRoomForm()
+    if form.validate_on_submit():
+
+        proc = Room(Number = form.number.data, Type = form.type.data, Unavailable = form.unavailable.data)
+        try:
+            db.session.add(proc)
+            db.session.commit()
+        except:
+            db.session.rollback()
+            flash('Error adding room')
+            return redirect(url_for('add_room'))
+        flash('Congratulations, room has been added!')
+        return redirect(url_for('add_room'))
+    return render_template('add_data.html', title='Home', form=form)
+
+@app.route('/add_nurse', methods=['GET', 'POST'])
+@login_required
+def add_nurse():
+    if request.form.get('Back to Dashboard') == 'Dashboard':
+        return redirect(url_for('index'+"_" + current_user.user_cat))
+    form = AddNurseForm()
+    if form.validate_on_submit():
+
+        proc = Nurse(EmployeeID=form.employeeID.data, Name=form.name.data, Position=form.position.data, SSN = form.SSN.data,Registered = form.registered.data)
+        try:
+            db.session.add(proc)
+            db.session.commit()
+        except:
+            db.session.rollback()
+            flash('Error adding nurse')
+            return redirect(url_for('add_nurse'))
+        flash('Congratulations, nurse has been added!')
+        return redirect(url_for('add_nurse'))
+    return render_template('add_data.html', title='Home', form=form)
 
 # # Add movie page.
 # @app.route('/add_movie', methods=['GET', 'POST'])

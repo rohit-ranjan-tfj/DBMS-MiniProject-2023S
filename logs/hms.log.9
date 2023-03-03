@@ -1,4 +1,4 @@
-2023-03-04 00:29:06,116 ERROR: Exception on /schedule_appointment [POST] [in /home/tfjuror/anaconda3/lib/python3.7/site-packages/flask/app.py:1455]
+2023-03-03 22:43:31,184 ERROR: Exception on /admit_patient [POST] [in /home/tfjuror/anaconda3/lib/python3.7/site-packages/flask/app.py:1455]
 Traceback (most recent call last):
   File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/sqlalchemy/engine/base.py", line 1771, in _execute_context
     cursor, statement, parameters, context
@@ -20,7 +20,7 @@ Traceback (most recent call last):
     err.raise_mysql_exception(self._data)
   File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/pymysql/err.py", line 143, in raise_mysql_exception
     raise errorclass(errno, errval)
-pymysql.err.OperationalError: (1525, "Incorrect DATETIME value: '10:30:00'")
+pymysql.err.IntegrityError: (1048, "Column 'End' cannot be null")
 
 The above exception was the direct cause of the following exception:
 
@@ -35,14 +35,33 @@ Traceback (most recent call last):
     return self.ensure_sync(self.view_functions[rule.endpoint])(**req.view_args)
   File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask_login/utils.py", line 272, in decorated_view
     return func(*args, **kwargs)
-  File "/home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/routes.py", line 166, in schedule_appointment
-    earlier_appointment_patient = Appointment.query.filter(Appointment.Patient == form.patient.data).filter(Appointment.Date == form.date.data).filter(Appointment.StartTime >= form.start_time.data).filter(Appointment.EndTime <= form.end_time.data).first()
-  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/sqlalchemy/orm/query.py", line 2760, in first
-    return self.limit(1)._iter().first()
-  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/sqlalchemy/orm/query.py", line 2847, in _iter
-    execution_options={"_sa_orm_load_options": self.load_options},
-  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/sqlalchemy/orm/session.py", line 1689, in execute
-    result = conn._execute_20(statement, params or {}, execution_options)
+  File "/home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/routes.py", line 127, in admit_patient
+    db.session.commit()
+  File "<string>", line 2, in commit
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/sqlalchemy/orm/session.py", line 1428, in commit
+    self._transaction.commit(_to_root=self.future)
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/sqlalchemy/orm/session.py", line 829, in commit
+    self._prepare_impl()
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/sqlalchemy/orm/session.py", line 808, in _prepare_impl
+    self.session.flush()
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/sqlalchemy/orm/session.py", line 3298, in flush
+    self._flush(objects)
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/sqlalchemy/orm/session.py", line 3438, in _flush
+    transaction.rollback(_capture_exception=True)
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/sqlalchemy/util/langhelpers.py", line 72, in __exit__
+    with_traceback=exc_tb,
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/sqlalchemy/util/compat.py", line 207, in raise_
+    raise exception
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/sqlalchemy/orm/session.py", line 3398, in _flush
+    flush_context.execute()
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/sqlalchemy/orm/unitofwork.py", line 456, in execute
+    rec.execute(self)
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/sqlalchemy/orm/unitofwork.py", line 633, in execute
+    uow,
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/sqlalchemy/orm/persistence.py", line 247, in save_obj
+    insert,
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/sqlalchemy/orm/persistence.py", line 1095, in _emit_insert_statements
+    statement, multiparams, execution_options=execution_options
   File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/sqlalchemy/engine/base.py", line 1582, in _execute_20
     return meth(self, args_10style, kwargs_10style, execution_options)
   File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/sqlalchemy/sql/elements.py", line 324, in _execute_on_connection
@@ -75,28 +94,9 @@ Traceback (most recent call last):
     err.raise_mysql_exception(self._data)
   File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/pymysql/err.py", line 143, in raise_mysql_exception
     raise errorclass(errno, errval)
-sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (1525, "Incorrect DATETIME value: '10:30:00'")
-[SQL: SELECT `Appointment`.`AppointmentID` AS `Appointment_AppointmentID`, `Appointment`.`Patient` AS `Appointment_Patient`, `Appointment`.`PrepNurse` AS `Appointment_PrepNurse`, `Appointment`.`Physician` AS `Appointment_Physician`, `Appointment`.`Date` AS `Appointment_Date`, `Appointment`.`StartTime` AS `Appointment_StartTime`, `Appointment`.`EndTime` AS `Appointment_EndTime` 
-FROM `Appointment` 
-WHERE `Appointment`.`Patient` = %(Patient_1)s AND `Appointment`.`Date` = %(Date_1)s AND `Appointment`.`StartTime` >= %(StartTime_1)s AND `Appointment`.`EndTime` <= %(EndTime_1)s 
- LIMIT %(param_1)s]
-[parameters: {'Patient_1': 1, 'Date_1': datetime.date(2023, 3, 5), 'StartTime_1': datetime.time(10, 30), 'EndTime_1': datetime.time(11, 0), 'param_1': 1}]
-(Background on this error at: http://sqlalche.me/e/14/e3q8)
-2023-03-04 00:40:11,943 INFO: HMS startup [in /home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/__init__.py:52]
-2023-03-04 00:40:14,515 INFO: HMS startup [in /home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/__init__.py:52]
-2023-03-04 00:40:50,296 ERROR: Exception on /schedule_appointment [POST] [in /home/tfjuror/anaconda3/lib/python3.7/site-packages/flask/app.py:1455]
-Traceback (most recent call last):
-  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask/app.py", line 2070, in wsgi_app
-    response = self.full_dispatch_request()
-  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask/app.py", line 1515, in full_dispatch_request
-    rv = self.handle_user_exception(e)
-  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask/app.py", line 1513, in full_dispatch_request
-    rv = self.dispatch_request()
-  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask/app.py", line 1499, in dispatch_request
-    return self.ensure_sync(self.view_functions[rule.endpoint])(**req.view_args)
-  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask_login/utils.py", line 272, in decorated_view
-    return func(*args, **kwargs)
-  File "/home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/routes.py", line 160, in schedule_appointment
-    if(form.date.data < datetime.now()):
-AttributeError: 'ScheduleAppointmentForm' object has no attribute 'date'
-2023-03-04 00:41:10,099 INFO: HMS startup [in /home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/__init__.py:52]
+sqlalchemy.exc.IntegrityError: (pymysql.err.IntegrityError) (1048, "Column 'End' cannot be null")
+[SQL: INSERT INTO `Stay` (`StayID`, `Patient`, `Room`, `Start`, `End`) VALUES (%(StayID)s, %(Patient)s, %(Room)s, %(Start)s, %(End)s)]
+[parameters: {'StayID': 1, 'Patient': 1, 'Room': 1, 'Start': datetime.date(2022, 3, 3), 'End': None}]
+(Background on this error at: http://sqlalche.me/e/14/gkpj)
+2023-03-03 22:45:14,011 INFO: HMS startup [in /home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/__init__.py:52]
+2023-03-03 22:45:16,347 INFO: HMS startup [in /home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/__init__.py:52]

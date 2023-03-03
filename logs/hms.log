@@ -1,4 +1,29 @@
-2023-03-03 16:54:58,220 ERROR: Exception on /index_admin [GET] [in /home/tfjuror/anaconda3/lib/python3.7/site-packages/flask/app.py:1455]
+2023-03-04 00:45:23,650 ERROR: Exception on /schedule_appointment [POST] [in /home/tfjuror/anaconda3/lib/python3.7/site-packages/flask/app.py:1455]
+Traceback (most recent call last):
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/sqlalchemy/engine/base.py", line 1771, in _execute_context
+    cursor, statement, parameters, context
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/sqlalchemy/engine/default.py", line 717, in do_execute
+    cursor.execute(statement, parameters)
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/pymysql/cursors.py", line 148, in execute
+    result = self._query(query)
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/pymysql/cursors.py", line 310, in _query
+    conn.query(q)
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/pymysql/connections.py", line 548, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/pymysql/connections.py", line 775, in _read_query_result
+    result.read()
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/pymysql/connections.py", line 1156, in read
+    first_packet = self.connection._read_packet()
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/pymysql/connections.py", line 725, in _read_packet
+    packet.raise_for_error()
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/pymysql/protocol.py", line 221, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/pymysql/err.py", line 143, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.IntegrityError: (1452, 'Cannot add or update a child row: a foreign key constraint fails (`flask_test1`.`Appointment`, CONSTRAINT `Appointment_ibfk_1` FOREIGN KEY (`Patient`) REFERENCES `Patient` (`SSN`))')
+
+The above exception was the direct cause of the following exception:
+
 Traceback (most recent call last):
   File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask/app.py", line 2070, in wsgi_app
     response = self.full_dispatch_request()
@@ -10,68 +35,70 @@ Traceback (most recent call last):
     return self.ensure_sync(self.view_functions[rule.endpoint])(**req.view_args)
   File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask_login/utils.py", line 272, in decorated_view
     return func(*args, **kwargs)
-  File "/home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/routes.py", line 52, in index_admin
-    return render_template('index.html', title='Home')
-  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask/templating.py", line 148, in render_template
-    ctx.app.jinja_env.get_or_select_template(template_name_or_list),
-  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/jinja2/environment.py", line 1068, in get_or_select_template
-    return self.get_template(template_name_or_list, parent, globals)
-  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/jinja2/environment.py", line 997, in get_template
-    return self._load_template(name, globals)
-  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/jinja2/environment.py", line 958, in _load_template
-    template = self.loader.load(self, name, self.make_globals(globals))
-  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/jinja2/loaders.py", line 137, in load
-    code = environment.compile(source, name, filename)
-  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/jinja2/environment.py", line 757, in compile
-    self.handle_exception(source=source_hint)
-  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/jinja2/environment.py", line 925, in handle_exception
-    raise rewrite_traceback_stack(source=source)
-  File "/home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/templates/index.html", line 24, in template
-    {% if current_user.user_cat=='admin'}
-jinja2.exceptions.TemplateSyntaxError: unexpected '}'
-2023-03-03 16:56:37,087 INFO: HMS startup [in /home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/__init__.py:52]
-2023-03-03 16:56:40,795 ERROR: Exception on /user/admin [GET] [in /home/tfjuror/anaconda3/lib/python3.7/site-packages/flask/app.py:1455]
-Traceback (most recent call last):
-  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask/app.py", line 2070, in wsgi_app
-    response = self.full_dispatch_request()
-  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask/app.py", line 1515, in full_dispatch_request
-    rv = self.handle_user_exception(e)
-  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask/app.py", line 1513, in full_dispatch_request
-    rv = self.dispatch_request()
-  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask/app.py", line 1499, in dispatch_request
-    return self.ensure_sync(self.view_functions[rule.endpoint])(**req.view_args)
-  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask_login/utils.py", line 272, in decorated_view
-    return func(*args, **kwargs)
-  File "/home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/routes.py", line 398, in user
-    return render_template('user.html', user=user)
-  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask/templating.py", line 150, in render_template
-    ctx.app,
-  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask/templating.py", line 128, in _render
-    rv = template.render(context)
-  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/jinja2/environment.py", line 1304, in render
-    self.environment.handle_exception()
-  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/jinja2/environment.py", line 925, in handle_exception
-    raise rewrite_traceback_stack(source=source)
-  File "/home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/templates/user.html", line 1, in top-level template code
-    {% extends "base.html" %}
-  File "/home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/templates/base.html", line 1, in top-level template code
-    {% extends 'bootstrap/base.html' %}
-  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask_bootstrap/templates/bootstrap/base.html", line 1, in top-level template code
-    {% block doc -%}
-  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask_bootstrap/templates/bootstrap/base.html", line 4, in block 'doc'
-    {%- block html %}
-  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask_bootstrap/templates/bootstrap/base.html", line 20, in block 'html'
-    {% block body -%}
-  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask_bootstrap/templates/bootstrap/base.html", line 23, in block 'body'
-    {% block content -%}
-  File "/home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/templates/base.html", line 54, in block 'content'
-    {% block app_content %}{% endblock %}
-  File "/home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/templates/user.html", line 18, in block 'app_content'
-    <a href="{{ url_for('edit_profile') }}">
-  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask/helpers.py", line 338, in url_for
-    return appctx.app.handle_url_build_error(error, endpoint, values)
-  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask/helpers.py", line 326, in url_for
-    endpoint, values, method=method, force_external=external
-  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/werkzeug/routing.py", line 2305, in build
-    raise BuildError(endpoint, values, method, self)
-werkzeug.routing.BuildError: Could not build url for endpoint 'edit_profile'. Did you mean 'add_movie' instead?
+  File "/home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/routes.py", line 176, in schedule_appointment
+    db.session.commit()
+  File "<string>", line 2, in commit
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/sqlalchemy/orm/session.py", line 1428, in commit
+    self._transaction.commit(_to_root=self.future)
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/sqlalchemy/orm/session.py", line 829, in commit
+    self._prepare_impl()
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/sqlalchemy/orm/session.py", line 808, in _prepare_impl
+    self.session.flush()
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/sqlalchemy/orm/session.py", line 3298, in flush
+    self._flush(objects)
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/sqlalchemy/orm/session.py", line 3438, in _flush
+    transaction.rollback(_capture_exception=True)
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/sqlalchemy/util/langhelpers.py", line 72, in __exit__
+    with_traceback=exc_tb,
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/sqlalchemy/util/compat.py", line 207, in raise_
+    raise exception
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/sqlalchemy/orm/session.py", line 3398, in _flush
+    flush_context.execute()
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/sqlalchemy/orm/unitofwork.py", line 456, in execute
+    rec.execute(self)
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/sqlalchemy/orm/unitofwork.py", line 633, in execute
+    uow,
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/sqlalchemy/orm/persistence.py", line 247, in save_obj
+    insert,
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/sqlalchemy/orm/persistence.py", line 1095, in _emit_insert_statements
+    statement, multiparams, execution_options=execution_options
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/sqlalchemy/engine/base.py", line 1582, in _execute_20
+    return meth(self, args_10style, kwargs_10style, execution_options)
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/sqlalchemy/sql/elements.py", line 324, in _execute_on_connection
+    self, multiparams, params, execution_options
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/sqlalchemy/engine/base.py", line 1461, in _execute_clauseelement
+    cache_hit=cache_hit,
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/sqlalchemy/engine/base.py", line 1814, in _execute_context
+    e, statement, parameters, cursor, context
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/sqlalchemy/engine/base.py", line 1995, in _handle_dbapi_exception
+    sqlalchemy_exception, with_traceback=exc_info[2], from_=e
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/sqlalchemy/util/compat.py", line 207, in raise_
+    raise exception
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/sqlalchemy/engine/base.py", line 1771, in _execute_context
+    cursor, statement, parameters, context
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/sqlalchemy/engine/default.py", line 717, in do_execute
+    cursor.execute(statement, parameters)
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/pymysql/cursors.py", line 148, in execute
+    result = self._query(query)
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/pymysql/cursors.py", line 310, in _query
+    conn.query(q)
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/pymysql/connections.py", line 548, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/pymysql/connections.py", line 775, in _read_query_result
+    result.read()
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/pymysql/connections.py", line 1156, in read
+    first_packet = self.connection._read_packet()
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/pymysql/connections.py", line 725, in _read_packet
+    packet.raise_for_error()
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/pymysql/protocol.py", line 221, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/pymysql/err.py", line 143, in raise_mysql_exception
+    raise errorclass(errno, errval)
+sqlalchemy.exc.IntegrityError: (pymysql.err.IntegrityError) (1452, 'Cannot add or update a child row: a foreign key constraint fails (`flask_test1`.`Appointment`, CONSTRAINT `Appointment_ibfk_1` FOREIGN KEY (`Patient`) REFERENCES `Patient` (`SSN`))')
+[SQL: INSERT INTO `Appointment` (`AppointmentID`, `Patient`, `PrepNurse`, `Physician`, `Start`, `End`) VALUES (%(AppointmentID)s, %(Patient)s, %(PrepNurse)s, %(Physician)s, %(Start)s, %(End)s)]
+[parameters: {'AppointmentID': 1, 'Patient': 1, 'PrepNurse': 1, 'Physician': 1, 'Start': datetime.datetime(2023, 3, 5, 10, 30), 'End': datetime.datetime(2023, 3, 5, 11, 0)}]
+(Background on this error at: http://sqlalche.me/e/14/gkpj)
+2023-03-04 00:51:45,167 INFO: HMS startup [in /home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/__init__.py:52]
+2023-03-04 01:33:26,748 INFO: HMS startup [in /home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/__init__.py:52]
+2023-03-04 01:35:48,863 INFO: HMS startup [in /home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/__init__.py:52]
+2023-03-04 01:36:40,791 INFO: HMS startup [in /home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/__init__.py:52]

@@ -172,12 +172,11 @@ class Prescribes(db.Model):
     Date = db.Column(db.DateTime,primary_key=True, nullable=False)
     Appointment = db.Column(db.Integer, db.ForeignKey('Appointment.AppointmentID'))
     Dose = db.Column(db.Integer, nullable=False)
+    Report = db.Column(db.String(140), nullable=True)
     
 class Room(db.Model):
     __tablename__ = 'Room'
     Number = db.Column(db.Integer, primary_key=True)
-    # BlockFloor = db.Column(db.Integer, db.ForeignKey('Block.Floor'), nullable=False)
-    # BlockCode = db.Column(db.Integer, db.ForeignKey('Block.Code'), nullable=False)
     Type = db.Column(db.String(40), nullable=False)
     Unavailable = db.Column(db.Boolean, nullable=False)
 
@@ -187,7 +186,7 @@ class Stay(db.Model):
     Patient = db.Column(db.Integer, db.ForeignKey('Patient.SSN'), nullable=False)
     Room = db.Column(db.Integer, db.ForeignKey('Room.Number'), nullable=False)
     Start = db.Column(db.DateTime, nullable=False)
-    End = db.Column(db.DateTime, nullable=False)
+    End = db.Column(db.DateTime, nullable=True)
 
 class Appointment(db.Model):
     __tablename__ = 'Appointment'
@@ -205,16 +204,10 @@ class Medication(db.Model):
     Brand = db.Column(db.String(40), nullable=False)
     Description = db.Column(db.String(40), nullable=False)
 
-class Block(db.Model):
-    __tablename__ = 'Block'
-    Floor = db.Column(db.Integer,primary_key=True)
-    Code = db.Column(db.Integer, primary_key=True)
-
 class On_Call(db.Model):
     __tablename__ = 'On_Call'
     Nurse = db.Column(db.Integer, db.ForeignKey('Nurse.EmployeeID'), primary_key=True)
-    # BlockCode = db.Column(db.Integer, db.ForeignKey('Block.Code'), primary_key=True)
-    # BlockFloor = db.Column(db.Integer, db.ForeignKey('Block.Floor'), primary_key=True)
+    Room = db.Column(db.Integer, db.ForeignKey('Room.Number'), primary_key=True)
     Start = db.Column(db.DateTime, primary_key=True, nullable=False)
     End = db.Column(db.DateTime, primary_key=True, nullable=False)
 

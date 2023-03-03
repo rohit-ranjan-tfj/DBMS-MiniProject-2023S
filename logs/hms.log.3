@@ -1,4 +1,4 @@
-2023-03-04 00:29:06,116 ERROR: Exception on /schedule_appointment [POST] [in /home/tfjuror/anaconda3/lib/python3.7/site-packages/flask/app.py:1455]
+2023-03-04 00:14:18,712 ERROR: Exception on /schedule_appointment [POST] [in /home/tfjuror/anaconda3/lib/python3.7/site-packages/flask/app.py:1455]
 Traceback (most recent call last):
   File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/sqlalchemy/engine/base.py", line 1771, in _execute_context
     cursor, statement, parameters, context
@@ -82,9 +82,8 @@ WHERE `Appointment`.`Patient` = %(Patient_1)s AND `Appointment`.`Date` = %(Date_
  LIMIT %(param_1)s]
 [parameters: {'Patient_1': 1, 'Date_1': datetime.date(2023, 3, 5), 'StartTime_1': datetime.time(10, 30), 'EndTime_1': datetime.time(11, 0), 'param_1': 1}]
 (Background on this error at: http://sqlalche.me/e/14/e3q8)
-2023-03-04 00:40:11,943 INFO: HMS startup [in /home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/__init__.py:52]
-2023-03-04 00:40:14,515 INFO: HMS startup [in /home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/__init__.py:52]
-2023-03-04 00:40:50,296 ERROR: Exception on /schedule_appointment [POST] [in /home/tfjuror/anaconda3/lib/python3.7/site-packages/flask/app.py:1455]
+2023-03-04 00:23:30,462 INFO: HMS startup [in /home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/__init__.py:52]
+2023-03-04 00:23:50,563 ERROR: Exception on /schedule_appointment [POST] [in /home/tfjuror/anaconda3/lib/python3.7/site-packages/flask/app.py:1455]
 Traceback (most recent call last):
   File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask/app.py", line 2070, in wsgi_app
     response = self.full_dispatch_request()
@@ -96,7 +95,18 @@ Traceback (most recent call last):
     return self.ensure_sync(self.view_functions[rule.endpoint])(**req.view_args)
   File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask_login/utils.py", line 272, in decorated_view
     return func(*args, **kwargs)
-  File "/home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/routes.py", line 160, in schedule_appointment
-    if(form.date.data < datetime.now()):
-AttributeError: 'ScheduleAppointmentForm' object has no attribute 'date'
-2023-03-04 00:41:10,099 INFO: HMS startup [in /home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/__init__.py:52]
+  File "/home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/routes.py", line 159, in schedule_appointment
+    appointment = Appointment(AppointmentID = form.appointmentID.data, Patient = form.patient.data, PrepNurse = form.prepNurse.data, Physician = form.physician.data, Date = form.date.data, StartTime = form.start_time.data, EndTime = form.end_time.data)
+  File "<string>", line 4, in __init__
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/sqlalchemy/orm/state.py", line 480, in _initialize_instance
+    manager.dispatch.init_failure(self, args, kwargs)
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/sqlalchemy/util/langhelpers.py", line 72, in __exit__
+    with_traceback=exc_tb,
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/sqlalchemy/util/compat.py", line 207, in raise_
+    raise exception
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/sqlalchemy/orm/state.py", line 477, in _initialize_instance
+    return manager.original_init(*mixed[1:], **kwargs)
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/sqlalchemy/orm/decl_base.py", line 1143, in _declarative_constructor
+    "%r is an invalid keyword argument for %s" % (k, cls_.__name__)
+TypeError: 'EndTime' is an invalid keyword argument for Appointment
+2023-03-04 00:28:27,120 INFO: HMS startup [in /home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/__init__.py:52]
