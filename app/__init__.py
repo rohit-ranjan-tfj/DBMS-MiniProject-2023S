@@ -52,11 +52,11 @@ if not app.debug:
     app.logger.info('HMS startup')
 
 from app import routes, models, errors
-from app.models import User, Movie, Order
+from app.models import *
 db.create_all()
 # Admin user is created on startup using config unless such a user already exists.
 if(User.query.filter_by(username='admin').first() is None):
-    admin = User(user_cat='manager',username='admin',email='admin@gmail.com')
+    admin = User(user_cat='admin',username='admin',email='admin@gmail.com')
     admin.password_hash = generate_password_hash(app.config['ADMIN_PASSWORD'])
     
     db.session.add(admin)

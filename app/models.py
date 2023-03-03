@@ -67,7 +67,6 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128))
     about_me = db.Column(db.String(140))
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
-    balance = db.Column(db.Integer, default=0)
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
@@ -114,75 +113,186 @@ class User(UserMixin, db.Model):
 def load_user(id):
     return User.query.get(int(id))
 
-# Movies database.
-class Movie(SearchableMixin, db.Model):
-    __searchable__ = ['name', 'genre', 'rating', 'price', 'description']
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(40))
+class Affiliated_with(db.Model):
+    __tablename__ = 'Affiliated_with'
+    Physician = db.Column(db.Integer, db.ForeignKey('Physician.EmployeeID'), primary_key=True)
+    Department = db.Column(db.Integer, db.ForeignKey('Department.DepartmentID'), primary_key=True)
+    PrimaryAffiliation = db.Column(db.Boolean, nullable=False)
+
+class Trained_In(db.Model):
+    __tablename__ = 'Trained_In'
+    Physician = db.Column(db.Integer, db.ForeignKey('Physician.EmployeeID'), primary_key=True)
+    Treatment = db.Column(db.Integer, db.ForeignKey('Procedure_.Code'), primary_key=True)
+    CertificationDate = db.Column(db.DateTime, nullable=False)
+    CertificationExpires = db.Column(db.DateTime, nullable=False)
+
+class Procedure_(db.Model):
+    __tablename__ = 'Procedure_'
+    Code = db.Column(db.Integer, primary_key=True)
+    Name = db.Column(db.String(40), nullable=False)
+    Cost = db.Column(db.Float, nullable=False)
+
+class Undergoes(db.Model):
+    __tablename__ = 'Undergoes'
+    Patient = db.Column(db.Integer, db.ForeignKey('Patient.SSN'), primary_key=True)
+    Procedure_ = db.Column(db.Integer, db.ForeignKey('Procedure_.Code'), primary_key=True)
+    Stay = db.Column(db.Integer, db.ForeignKey('Stay.StayID'), primary_key=True)
+    Date = db.Column(db.DateTime, primary_key=True)
+    Physician = db.Column(db.Integer, db.ForeignKey('Physician.EmployeeID'))
+    AssistingNurse = db.Column(db.Integer, db.ForeignKey('Nurse.EmployeeID'))
+
+class Department(db.Model):
+    __tablename__ = 'Department'
+    DepartmentID = db.Column(db.Integer, primary_key=True)
+    Name = db.Column(db.String(40), nullable=False)
+    Head = db.Column(db.Integer, db.ForeignKey('Physician.EmployeeID'), nullable=False)
+
+class Physician(db.Model):
+    __tablename__ = 'Physician'
+    EmployeeID = db.Column(db.Integer, primary_key=True)
     img_path = db.Column(db.String(140))
-    description = db.Column(db.String(140))
-    genre = db.Column(db.String(40))
-    rating = db.Column(db.Float)
-    price = db.Column(db.Float)
-    quantity = db.Column(db.Integer)
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    Name = db.Column(db.String(40), nullable=False)
+    Position = db.Column(db.String(40), nullable=False)
+    SSN = db.Column(db.Integer, nullable=False)
 
-    def __repr__(self):
-        return '<Movie {} {} {} {} {}>'.format(self.id, self.name, self.genre, self.rating, self.price)
+class Patient(db.Model):
+    __tablename__ = 'Patient'
+    SSN = db.Column(db.Integer, primary_key=True)
+    Name = db.Column(db.String(40), nullable=False)
+    Address = db.Column(db.String(40), nullable=False)
+    Phone = db.Column(db.String(40), nullable=False)
+    PCP = db.Column(db.Integer, db.ForeignKey('Physician.EmployeeID'), nullable=False)
+    InsuranceID = db.Column(db.String(40), nullable=False)
 
-    def getName(self):
-        return self.name
-
-    def getDescription(self):
-        return self.description
+class Prescribes(db.Model):
+    __tablename__ = 'Prescribes'
+    Physician = db.Column(db.Integer, db.ForeignKey('Physician.EmployeeID'), primary_key=True)
+    Patient = db.Column(db.Integer, db.ForeignKey('Patient.SSN'), primary_key=True)
+    Medication = db.Column(db.Integer, db.ForeignKey('Medication.Code'), primary_key=True)
+    Date = db.Column(db.DateTime,primary_key=True, nullable=False)
+    Appointment = db.Column(db.Integer, db.ForeignKey('Appointment.AppointmentID'))
+    Dose = db.Column(db.Integer, nullable=False)
     
-    def getPrice(self):
-        return self.price
+class Room(db.Model):
+    __tablename__ = 'Room'
+    Number = db.Column(db.Integer, primary_key=True)
+    # BlockFloor = db.Column(db.Integer, db.ForeignKey('Block.Floor'), nullable=False)
+    # BlockCode = db.Column(db.Integer, db.ForeignKey('Block.Code'), nullable=False)
+    Type = db.Column(db.String(40), nullable=False)
+    Unavailable = db.Column(db.Boolean, nullable=False)
 
-    def getID(self):
-        return self.id
+class Stay(db.Model):
+    __tablename__ = 'Stay'
+    StayID = db.Column(db.Integer, primary_key=True)
+    Patient = db.Column(db.Integer, db.ForeignKey('Patient.SSN'), nullable=False)
+    Room = db.Column(db.Integer, db.ForeignKey('Room.Number'), nullable=False)
+    Start = db.Column(db.DateTime, nullable=False)
+    End = db.Column(db.DateTime, nullable=False)
 
-# Orders database.
-class Order(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    movie_id = db.Column(db.Integer, db.ForeignKey('movie.id'))
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    deadline = db.Column(db.DateTime, index=True, default=(datetime.utcnow() + timedelta(days=30)))
-    returned = db.Column(db.DateTime, default=None)
-    status = db.Column(db.String(40))
-    price = db.Column(db.Float)
-    quantity = db.Column(db.Integer)
+class Appointment(db.Model):
+    __tablename__ = 'Appointment'
+    AppointmentID = db.Column(db.Integer, primary_key=True)
+    Patient = db.Column(db.Integer, db.ForeignKey('Patient.SSN'), nullable=False)
+    PrepNurse = db.Column(db.Integer, db.ForeignKey('Nurse.EmployeeID'), nullable=False)
+    Physician = db.Column(db.Integer, db.ForeignKey('Physician.EmployeeID'), nullable=False)
+    Start = db.Column(db.DateTime, nullable=False)
+    End = db.Column(db.DateTime, nullable=False)
+
+class Medication(db.Model):
+    __tablename__ = 'Medication'
+    Code = db.Column(db.Integer, primary_key=True)
+    Name = db.Column(db.String(40), nullable=False)
+    Brand = db.Column(db.String(40), nullable=False)
+    Description = db.Column(db.String(40), nullable=False)
+
+class Block(db.Model):
+    __tablename__ = 'Block'
+    Floor = db.Column(db.Integer,primary_key=True)
+    Code = db.Column(db.Integer, primary_key=True)
+
+class On_Call(db.Model):
+    __tablename__ = 'On_Call'
+    Nurse = db.Column(db.Integer, db.ForeignKey('Nurse.EmployeeID'), primary_key=True)
+    # BlockCode = db.Column(db.Integer, db.ForeignKey('Block.Code'), primary_key=True)
+    # BlockFloor = db.Column(db.Integer, db.ForeignKey('Block.Floor'), primary_key=True)
+    Start = db.Column(db.DateTime, primary_key=True, nullable=False)
+    End = db.Column(db.DateTime, primary_key=True, nullable=False)
+
+
+class Nurse(db.Model):
+    __tablename__ = 'Nurse'
+    EmployeeID = db.Column(db.Integer, primary_key=True)
+    Name = db.Column(db.String(40), nullable=False)
+    Position = db.Column(db.String(40), nullable=False)
+    SSN = db.Column(db.Integer, nullable=False)
+    Registered = db.Column(db.Boolean, nullable=False)
+
+# # Movies database.
+# class Movie(SearchableMixin, db.Model):
+#     __searchable__ = ['name', 'genre', 'rating', 'price', 'description']
+#     id = db.Column(db.Integer, primary_key=True)
+#     name = db.Column(db.String(40))
+#     img_path = db.Column(db.String(140))
+#     description = db.Column(db.String(140))
+#     genre = db.Column(db.String(40))
+#     rating = db.Column(db.Float)
+#     price = db.Column(db.Float)
+#     quantity = db.Column(db.Integer)
+#     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+
+#     def __repr__(self):
+#         return '<Movie {} {} {} {} {}>'.format(self.id, self.name, self.genre, self.rating, self.price)
+
+#     def getName(self):
+#         return self.name
+
+#     def getDescription(self):
+#         return self.description
     
-    def __repr__(self):
-        return '<Order {} {} {} {}>'.format(self.id, self.user_id, self.movie_id, self.timestamp)
+#     def getPrice(self):
+#         return self.price
 
-    def getID(self):
-        return self.id
+#     def getID(self):
+#         return self.id
 
-    def getUserID(self):
-        return self.user_id
-
-    def getMovieID(self):
-        return self.movie_id
-
-    def getTimestamp(self):
-        return self.timestamp
+# # Orders database.
+# class Order(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+#     movie_id = db.Column(db.Integer, db.ForeignKey('movie.id'))
+#     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+#     deadline = db.Column(db.DateTime, index=True, default=(datetime.utcnow() + timedelta(days=30)))
+#     returned = db.Column(db.DateTime, default=None)
+#     status = db.Column(db.String(40))
+#     price = db.Column(db.Float)
+#     quantity = db.Column(db.Integer)
     
-    def getDeadline(self):
-        return self.deadline
+#     def __repr__(self):
+#         return '<Order {} {} {} {}>'.format(self.id, self.user_id, self.movie_id, self.timestamp)
 
-    def getReturned(self):
-        return self.returned
-    
-    def getStatus(self):
-        return self.status
-    
-    def getPrice(self):
-        return self.price
+#     def getID(self):
+#         return self.id
 
+#     def getUserID(self):
+#         return self.user_id
 
+#     def getMovieID(self):
+#         return self.movie_id
+
+#     def getTimestamp(self):
+#         return self.timestamp
     
+#     def getDeadline(self):
+#         return self.deadline
+
+#     def getReturned(self):
+#         return self.returned
+    
+#     def getStatus(self):
+#         return self.status
+    
+#     def getPrice(self):
+#         return self.price
 
     
             

@@ -1,0 +1,100 @@
+2023-03-02 17:01:29,805 INFO: HMS startup [in /home/tfjuror/Desktop/Courses/DBMS/Lab/MiniProj/VRS/app/__init__.py:52]
+2023-03-02 17:01:33,562 INFO: HMS startup [in /home/tfjuror/Desktop/Courses/DBMS/Lab/MiniProj/VRS/app/__init__.py:52]
+2023-03-03 16:05:33,674 INFO: HMS startup [in /home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/__init__.py:52]
+2023-03-03 16:08:51,437 INFO: HMS startup [in /home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/__init__.py:52]
+2023-03-03 16:09:18,854 INFO: HMS startup [in /home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/__init__.py:52]
+2023-03-03 16:10:55,875 INFO: HMS startup [in /home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/__init__.py:52]
+2023-03-03 16:12:52,364 INFO: HMS startup [in /home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/__init__.py:52]
+2023-03-03 16:13:42,459 INFO: HMS startup [in /home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/__init__.py:52]
+2023-03-03 16:13:51,259 INFO: HMS startup [in /home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/__init__.py:52]
+2023-03-03 16:14:11,400 INFO: HMS startup [in /home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/__init__.py:52]
+2023-03-03 16:15:20,815 INFO: HMS startup [in /home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/__init__.py:52]
+2023-03-03 16:16:21,441 INFO: HMS startup [in /home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/__init__.py:52]
+2023-03-03 16:16:34,465 INFO: HMS startup [in /home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/__init__.py:52]
+2023-03-03 16:16:39,032 INFO: HMS startup [in /home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/__init__.py:52]
+2023-03-03 16:16:42,027 ERROR: Exception on /explore [GET] [in /home/tfjuror/anaconda3/lib/python3.7/site-packages/flask/app.py:1455]
+Traceback (most recent call last):
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask/app.py", line 2070, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask/app.py", line 1515, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask/app.py", line 1513, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask/app.py", line 1499, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**req.view_args)
+  File "/home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/routes.py", line 258, in explore
+    next_url=next_url, prev_url=prev_url)
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask/templating.py", line 150, in render_template
+    ctx.app,
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask/templating.py", line 128, in _render
+    rv = template.render(context)
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/jinja2/environment.py", line 1304, in render
+    self.environment.handle_exception()
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/jinja2/environment.py", line 925, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/templates/explore.html", line 2, in top-level template code
+    {% import 'bootstrap/wtf.html' as wtf %}
+  File "/home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/templates/base.html", line 1, in top-level template code
+    {% extends 'bootstrap/base.html' %}
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask_bootstrap/templates/bootstrap/base.html", line 1, in top-level template code
+    {% block doc -%}
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask_bootstrap/templates/bootstrap/base.html", line 4, in block 'doc'
+    {%- block html %}
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask_bootstrap/templates/bootstrap/base.html", line 20, in block 'html'
+    {% block body -%}
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask_bootstrap/templates/bootstrap/base.html", line 21, in block 'body'
+    {% block navbar %}
+  File "/home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/templates/base.html", line 40, in block 'navbar'
+    action="{{ url_for('search') }}">
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask/helpers.py", line 338, in url_for
+    return appctx.app.handle_url_build_error(error, endpoint, values)
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask/helpers.py", line 326, in url_for
+    endpoint, values, method=method, force_external=external
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/werkzeug/routing.py", line 2305, in build
+    raise BuildError(endpoint, values, method, self)
+werkzeug.routing.BuildError: Could not build url for endpoint 'search'. Did you mean 'user' instead?
+2023-03-03 16:18:01,662 INFO: HMS startup [in /home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/__init__.py:52]
+2023-03-03 16:18:31,982 ERROR: Exception on /login [GET] [in /home/tfjuror/anaconda3/lib/python3.7/site-packages/flask/app.py:1455]
+Traceback (most recent call last):
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask/app.py", line 2070, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask/app.py", line 1515, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask/app.py", line 1513, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask/app.py", line 1499, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**req.view_args)
+  File "/home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/routes.py", line 277, in login
+    return render_template('login.html', title='Sign In', form=form)
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask/templating.py", line 150, in render_template
+    ctx.app,
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask/templating.py", line 128, in _render
+    rv = template.render(context)
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/jinja2/environment.py", line 1304, in render
+    self.environment.handle_exception()
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/jinja2/environment.py", line 925, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/templates/login.html", line 2, in top-level template code
+    {% import 'bootstrap/wtf.html' as wtf %}
+  File "/home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/templates/base.html", line 1, in top-level template code
+    {% extends 'bootstrap/base.html' %}
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask_bootstrap/templates/bootstrap/base.html", line 1, in top-level template code
+    {% block doc -%}
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask_bootstrap/templates/bootstrap/base.html", line 4, in block 'doc'
+    {%- block html %}
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask_bootstrap/templates/bootstrap/base.html", line 20, in block 'html'
+    {% block body -%}
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask_bootstrap/templates/bootstrap/base.html", line 23, in block 'body'
+    {% block content -%}
+  File "/home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/templates/base.html", line 54, in block 'content'
+    {% block app_content %}{% endblock %}
+  File "/home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/templates/login.html", line 12, in block 'app_content'
+    <p>New User? <a href="{{ url_for('register') }}">Click to Register!</a> <a href="{{ url_for('staff_register') }}">Click to Register as staff!</a></p>
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask/helpers.py", line 338, in url_for
+    return appctx.app.handle_url_build_error(error, endpoint, values)
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/flask/helpers.py", line 326, in url_for
+    endpoint, values, method=method, force_external=external
+  File "/home/tfjuror/anaconda3/lib/python3.7/site-packages/werkzeug/routing.py", line 2305, in build
+    raise BuildError(endpoint, values, method, self)
+werkzeug.routing.BuildError: Could not build url for endpoint 'register'. Did you mean 'user' instead?
+2023-03-03 16:20:37,657 INFO: HMS startup [in /home/tfjuror/Desktop/Courses/DBMS/Lab/DBMS-MiniProject-2023S/app/__init__.py:52]

@@ -6,7 +6,7 @@ from wtforms import StringField, PasswordField, BooleanField, SubmitField, \
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, \
     Length,NumberRange
 from app import app
-from app.models import User, Movie
+from app.models import *
 from flask import request
 
 # This is the form used to create a search query.
@@ -114,6 +114,26 @@ class AddStockForm(FlaskForm):
 # An empty form.
 class EmptyForm(FlaskForm):
     submit = SubmitField('Submit')
+
+# This is the form to add a new user to the database.
+class UserForm(FlaskForm):
+    user_category = StringField('User Category', validators=[DataRequired()])
+    username = StringField('Username', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    password2 = PasswordField(
+        'Repeat Password', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Submit')
+
+    def validate_username(self, username):
+        user = User.query.filter_by(username=username.data).first()
+        if user is not None:
+            raise ValidationError('Please use a different username.')
+
+    def validate_email(self, email):
+        user = User.query.filter_by(email=email.data).first()
+        if user is not None:
+            raise ValidationError('Please use a different email address.')
 
 # This is the form to add a new movie to the database.
 class MovieForm(FlaskForm):
