@@ -1,12 +1,11 @@
-# Welcome to Video Rental System!
+# Welcome to Hospital Management System!
 
-The VRS was implemented as a course project under Prof. Abir Das and Prof. Sourangshu Bhattacharya for ``CS29202 SOFTWARE ENGINEERING LABORATORY`` in Spring '22. Check out our [presentation](Project_Presentation.pdf)!
+The HMS was implemented as a min-term project for ``CS39202 DATABASE MANAGEMENT SYSTEMS LABORATORY`` in Spring '23. 
 
 ## Run Instructions
 ```
-$ sudo systemctl start elasticsearch.service
+Provide the URI to your database server in config.py.
 $ flask db migrate
-$ flask db upgrade
 $ flask run
 ```
 ## Install and Setup Instructions
