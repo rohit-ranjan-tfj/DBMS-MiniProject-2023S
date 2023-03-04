@@ -7,6 +7,14 @@ The HMS was implemented as a min-term project for ``CS39202 DATABASE MANAGEMENT 
 Provide the URI to your database server in config.py.
 $ flask db migrate
 $ flask run
+
+On first startup, only admin user account in available. 
+>User Category: admin
+>Username: admin
+>Password: admin
+
+Use admin account to create accounts for front_desk operator, data_entry, operator and doctor.
+Respective User Categories are front_desk, data_entry and doctor.
 ```
 ## Install and Setup Instructions
 [ElasticSearch Setup Instructions](https://stackoverflow.com/questions/39447617/failed-to-establish-a-new-connection-errno-111-connection-refusedelasticsear)
