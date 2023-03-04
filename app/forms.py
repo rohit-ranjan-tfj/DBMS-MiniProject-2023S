@@ -23,7 +23,7 @@ class SearchForm(FlaskForm):
 
 # This is the form used to login an existing user. All stakeholders can login via the same form.
 class LoginForm(FlaskForm):
-    user_cat = StringField('User Category', validators=[DataRequired()])
+    user_cat = SelectField('User Category', choices= [ ('admin'), ('front_desk'), ('data_entry'), ('doctor')], validators=[DataRequired()])
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     remember_me = BooleanField('Remember Me')
@@ -47,7 +47,7 @@ class EmptyForm(FlaskForm):
 
 # This is the form to add a new user to the database.
 class UserForm(FlaskForm):
-    user_cat = SelectField('User Category', choices=[('Front-Desk Operator', 'front_desk'), ('Data Entry', 'data_entry'), ('Doctor', 'doctor')], validators=[DataRequired()])
+    user_cat = SelectField('User Category', choices=[('front_desk'), ('data_entry'), ('doctor')], validators=[DataRequired()])
     SSN = IntegerField('SSN', validators=[DataRequired()])
     username = StringField('Username', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
