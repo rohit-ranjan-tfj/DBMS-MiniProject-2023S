@@ -474,7 +474,7 @@ def add_department():
             db.session.rollback()
             flash('Error adding department')
             return redirect(url_for('add_department'))
-        flash('Congratulations, deaprtment has been added!')
+        flash('Congratulations, department has been added!')
         return redirect(url_for('add_department'))
     return render_template('add_data.html', title='Home', form=form)
 

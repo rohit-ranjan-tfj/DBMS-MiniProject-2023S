@@ -8,11 +8,12 @@
                 <p>Last seen on: {{ moment(user.last_seen).format('LLL') }}</p>
                 {% endif %}
                 <p>Category : {{ user.user_cat }}</p>
+                <p>SSN: {{ user.SSN}}</p>
                 {% if user.user_cat=='user' %}
                 <form method="post" >
                     <input type="submit" class="btn btn-info" value="View Orders of User ID {{ user.id }}" name="View Orders">
                     <input type="submit" class="btn btn-info" value="View Deadlines of User ID {{ user.id }}" name="View Deadlines">
-                    <input type="submit" class="btn btn-info" value="Delete User ID {{ user.id }}" name="Delete User">
+                    <input type="submit" class="btn btn-info" value="Delete User SSN {{ user.SSN }}" name="Delete User">
                 </form>
                 {% endif %}
                 {% if user.user_cat=='staff' %}

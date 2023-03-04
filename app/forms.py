@@ -137,7 +137,7 @@ class AddProcedureForm(FlaskForm):
 class AddDepartmentForm(FlaskForm):
     departmentID = IntegerField('Department ID', validators=[DataRequired()])
     name = StringField('Department Name', validators=[DataRequired()])
-    head = IntegerField('Department Head', validators=[DataRequired()])
+    head = IntegerField('Department Head ID', validators=[DataRequired()])
     submit = SubmitField('Submit')
 
 class AddPhysicianForm(FlaskForm):
