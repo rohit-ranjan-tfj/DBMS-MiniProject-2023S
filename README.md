@@ -8,7 +8,7 @@ Provide the URI to your database server in config.py.
 $ flask db migrate
 $ flask run
 
-On first startup, only admin user account in available. 
+On first startup, only admin user account is available. 
 >User Category: admin
 >Username: admin
 >Password: admin
