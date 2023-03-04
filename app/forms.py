@@ -119,6 +119,7 @@ class EmptyForm(FlaskForm):
 # This is the form to add a new user to the database.
 class UserForm(FlaskForm):
     user_cat = StringField('User Category', validators=[DataRequired()])
+    SSN = IntegerField('SSN', validators=[DataRequired()])
     username = StringField('Username', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
@@ -153,6 +154,14 @@ class AddMedicationForm(FlaskForm):
     description = StringField('Description', validators=[DataRequired()])
     submit = SubmitField('Submit')
 
+class QueryPatientsSSNForm(FlaskForm):
+    SSN = IntegerField('Patient SSN', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+
+class DeleteUserForm(FlaskForm):
+    SSN = IntegerField('User SSN', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+
 class AddAffiliationForm(FlaskForm):
     physician = IntegerField('Physician ID', validators=[DataRequired()])
     department = IntegerField('Department ID', validators=[DataRequired()])
@@ -163,7 +172,7 @@ class AddTrainingForm(FlaskForm):
     physician = IntegerField('Physician ID', validators=[DataRequired()])
     treatment = IntegerField('Treatment ID', validators=[DataRequired()])
     certificationDate = DateField('Certification Date', validators=[DataRequired()], format='%Y-%m-%d')
-    certificationExprires = DateField('Certification Expires', validators=[DataRequired()], format='%Y-%m-%d')
+    certificationExpires = DateField('Certification Expires', validators=[DataRequired()], format='%Y-%m-%d')
     submit = SubmitField('Submit')
 
 class ScheduleAppointmentForm(FlaskForm):

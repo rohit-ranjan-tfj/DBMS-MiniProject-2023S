@@ -20,6 +20,16 @@
     {% for user in users %}
         {% include '_user.html' %}
     {% endfor %}
+    {% for patient in patients %}
+        {% include '_patient.html' %}
+    {% endfor %}
+    {% for appointment in appointments %}
+        {% include '_appointment.html' %}
+    {% endfor %}
+    {% for prescription in prescriptions %}
+        {% include '_prescription.html' %}
+    {% endfor %}
+    
     {% if current_user.is_authenticated %}
         {% if current_user.user_cat == 'admin' %}
             <form method="post">
@@ -42,6 +52,7 @@
                 <input type="submit" class="btn btn-info" value="Add Training" name="Add Training">
                 <a href="{{ url_for('add_training') }}">
                 <input type="submit" class="btn btn-info" value="View Users" name="View Users">
+                <input type="submit" class="btn btn-info" value="Delete User" name="Delete User">
             </form>
         {% endif %}
         {% if current_user.user_cat == 'front_desk' %}
@@ -60,6 +71,14 @@
             <form method="post">
                 <input type="submit" class="btn btn-info" value="Add results and prescriptions" name="Add results and prescriptions">
                 <a href="{{ url_for('add_results_prescriptions') }}">
+            </form>
+        {% endif %}
+        {% if current_user.user_cat == 'doctor' %}
+            <form method="post">
+                <input type="submit" class="btn btn-info" value="View my Patients" name="View my Patients">
+                <input type="submit" class="btn btn-info" value="View my Appointments" name="View my Appointments">
+                <input type="submit" class="btn btn-info" value="View my Prescriptions" name="View my Prescriptions">
+                <input type="submit" class="btn btn-info" value="Query all patient information by SSN" name="Query all patient information by SSN">
             </form>
         {% endif %}
     {% endif %} 

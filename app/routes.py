@@ -48,6 +48,11 @@ def index_admin():
     if request.form.get('Add Nurse') == 'Add Nurse':
         return redirect(url_for('add_nurse'))
     
+    if request.form.get('Add Affiliation') == 'Add Affiliation':
+        return redirect(url_for('add_affiliation'))
+    
+    if request.form.get('Add Training') == 'Add Training':
+        return redirect(url_for('add_training'))
 
     if request.form.get('View Users') == 'View Users':
         page = request.args.get('page', 1, type=int)
@@ -60,16 +65,29 @@ def index_admin():
         return render_template('index.html', title='Home', users=users.items,
                             next_url=next_url, prev_url=prev_url)
 
-    if str(request.form.get('Delete User'))[:11] == 'Delete User':
-        tbd_user = User.query.filter_by(id = int(str(request.form.get('Delete User'))[15:])).first()
-        if tbd_user is not None:
-            db.session.delete(tbd_user)
-            db.session.commit()
-            flash('User deleted.')
-        else:
-            flash('User not found.')
+    if request.form.get('Delete User') == 'Delete User':
+        return redirect(url_for('delete_user'))
     
     return render_template('index.html', title='Home')
+
+@app.route('/delete_user', methods=['GET', 'POST'])
+@login_required
+def delete_user():
+    form = DeleteUserForm()
+    if form.validate_on_submit():
+        user = User.query.filter(User.SSN==form.SSN.data).first()
+        if user is None:
+            flash('User not found')
+            return redirect(url_for('delete_user'))
+        try:
+            db.session.delete(user)
+            db.session.commit()
+        except:
+            flash('User could not be deleted')
+            return redirect(url_for('delete_user'))
+        flash('User deleted')
+        return redirect(url_for('index_admin'))
+    return render_template('add_data.html', title='Delete User', form=form)
 
 # Dashboard for front_desk user.
 @app.route('/index_front_desk', methods=['GET', 'POST'])
@@ -97,6 +115,91 @@ def index_data_entry():
         return redirect(url_for('add_results_prescriptions'))
     
     return render_template('index.html', title='Home')
+
+# Dashboard for doctor user.
+@app.route('/index_doctor', methods=['GET', 'POST'])
+@login_required
+def index_doctor():
+    doctor = Physician.query.filter(Physician.SSN==current_user.SSN).first()
+
+    if request.form.get('View my Patients') == 'View my Patients':
+        page = request.args.get('page', 1, type=int)
+        patients_1 = Prescribes.query.filter(Prescribes.Physician == doctor.EmployeeID).with_entities(Prescribes.Patient)
+        patients_2 = Patient.query.filter(Patient.PCP==doctor.EmployeeID).with_entities(Patient.SSN)
+        patients_3 = Undergoes.query.filter(Undergoes.Physician==doctor.EmployeeID).with_entities(Undergoes.Patient)
+        patients_4 = Appointment.query.filter(Appointment.Physician==doctor.EmployeeID).with_entities(Appointment.Patient)
+        patients=[]
+        for p in patients_1:
+            patients.append(p[0])
+        for p in patients_2:
+            patients.append(p[0])
+        for p in patients_3:
+            patients.append(p[0])
+        for p in patients_4:
+            patients.append(p[0])
+
+        patients_full = Patient.query.filter(Patient.SSN==patients[0])
+        for p in patients:
+            pp = Patient.query.filter(Patient.SSN==p)
+            patients_full.union(pp)
+        patients = patients_full
+        patients = patients.paginate(
+            page, app.config['USERS_PER_PAGE'], False)
+        next_url = url_for('explore', page=patients.next_num) \
+            if patients.has_next else None
+        prev_url = url_for('explore', page=patients.prev_num) \
+            if patients.has_prev else None
+        return render_template('index.html', title='Home', patients=patients.items,
+                            next_url=next_url, prev_url=prev_url)
+    
+    if request.form.get('View my Appointments') == 'View my Appointments':
+        page = request.args.get('page', 1, type=int)
+        appointments = Appointment.query.filter(Appointment.Physician==doctor.EmployeeID).paginate(
+            page, app.config['USERS_PER_PAGE'], False)
+        next_url = url_for('explore', page=appointments.next_num) \
+            if appointments.has_next else None
+        prev_url = url_for('explore', page=appointments.prev_num) \
+            if appointments.has_prev else None
+        return render_template('index.html', title='Home', appointments=appointments.items,
+                            next_url=next_url, prev_url=prev_url)
+    
+    if request.form.get('View my Prescriptions') == 'View my Prescriptions':
+        page = request.args.get('page', 1, type=int)
+        prescriptions = Prescribes.query.filter(Prescribes.Physician==doctor.EmployeeID).paginate(
+            page, app.config['USERS_PER_PAGE'], False)
+        next_url = url_for('explore', page=prescriptions.next_num) \
+            if prescriptions.has_next else None
+        prev_url = url_for('explore', page=prescriptions.prev_num) \
+            if prescriptions.has_prev else None
+        return render_template('index.html', title='Home', prescriptions=prescriptions.items,
+                            next_url=next_url, prev_url=prev_url)
+    
+    if request.form.get('Query all patient information by SSN') == 'Query all patient information by SSN':
+        return redirect(url_for('query_patients_ssn'))
+    
+    return render_template('index.html', title='Home')
+
+@app.route('/query_patients_ssn', methods=['GET', 'POST'])
+@login_required
+def query_patients_ssn():
+    if request.form.get('Back to Dashboard') == 'Dashboard':
+        return redirect(url_for('index'+"_" + current_user.user_cat))
+    form = QueryPatientsSSNForm()
+    if form.validate_on_submit():
+        page = request.args.get('page', 1, type=int)
+        patient = Patient.query.filter(Patient.SSN==form.SSN.data).first()
+        patients = Patient.query.filter(Patient.SSN==form.SSN.data).paginate(
+            page, app.config['USERS_PER_PAGE'], False)
+        if patient is None:
+            flash('Patient not found')
+            return redirect(url_for('query_patients_ssn'))
+        
+        appointments = Appointment.query.filter(Appointment.Patient==patient.SSN).paginate(
+            page, app.config['USERS_PER_PAGE'], False)
+        prescriptions = Prescribes.query.filter(Prescribes.Patient==patient.SSN).paginate(
+            page, app.config['USERS_PER_PAGE'], False)
+        return render_template('index.html', title='Home', patients=patients.items, appointments=appointments.items, prescriptions=prescriptions.items)
+    return render_template('add_data.html', title='Query Patients by SSN', form=form)
 
 @app.route('/add_results_prescriptions', methods=['GET', 'POST'])
 @login_required
@@ -691,7 +794,7 @@ def add_user():
     form = UserForm()
     if form.validate_on_submit():
 
-        user = User(username=form.username.data, email=form.email.data, user_cat=form.user_cat.data)
+        user = User(SSN =form.SSN.data,username=form.username.data, email=form.email.data, user_cat=form.user_cat.data)
         user.set_password(form.password.data)
         try:
             db.session.add(user)

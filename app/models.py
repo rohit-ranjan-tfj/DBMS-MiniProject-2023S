@@ -62,6 +62,7 @@ class SearchableMixin(object):
 class User(UserMixin, db.Model):
     user_cat = db.Column(db.String(64), index=True)
     id = db.Column(db.Integer, primary_key=True)
+    SSN = db.Column(db.Integer, index=True, unique=True)
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
@@ -157,6 +158,7 @@ class Physician(db.Model):
 
 class Patient(db.Model):
     __tablename__ = 'Patient'
+    img_path = db.Column(db.String(140), nullable=True)
     SSN = db.Column(db.Integer, primary_key=True)
     Name = db.Column(db.String(40), nullable=False)
     Address = db.Column(db.String(40), nullable=False)
