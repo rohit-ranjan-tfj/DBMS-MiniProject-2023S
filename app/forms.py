@@ -2,7 +2,7 @@
 # These forms are automatically rendered onto the webpage via wtf_forms.
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, \
-    TextAreaField, IntegerField, FloatField, DateField, TimeField, DateTimeField
+    TextAreaField, IntegerField, FloatField, DateField, TimeField, DateTimeField, SelectField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, \
     Length,NumberRange
 from app import app
@@ -47,7 +47,7 @@ class EmptyForm(FlaskForm):
 
 # This is the form to add a new user to the database.
 class UserForm(FlaskForm):
-    user_cat = StringField('User Category', validators=[DataRequired()])
+    user_cat = SelectField('User Category', choices=[('Front-Desk Operator', 'front_desk'), ('Data Entry', 'data_entry'), ('Doctor', 'doctor')], validators=[DataRequired()])
     SSN = IntegerField('SSN', validators=[DataRequired()])
     username = StringField('Username', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])

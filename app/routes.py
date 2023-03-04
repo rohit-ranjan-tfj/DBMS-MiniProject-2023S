@@ -431,7 +431,7 @@ def add_user():
             db.session.commit()
         except:
             db.session.rollback()
-            flash('Username or email already exists')
+            flash('SSN, Username or email already exists')
             return redirect(url_for('add_user'))
         flash('Congratulations, user has been added!')
         return redirect(url_for('add_user'))
