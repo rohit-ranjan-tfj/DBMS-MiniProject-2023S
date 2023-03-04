@@ -151,7 +151,7 @@ class Department(db.Model):
 class Physician(db.Model):
     __tablename__ = 'Physician'
     EmployeeID = db.Column(db.Integer, primary_key=True)
-    img_path = db.Column(db.String(140))
+    img_path = db.Column(db.String(140),default='doctor.jpg', nullable=True)
     Name = db.Column(db.String(40), nullable=False)
     Position = db.Column(db.String(40), nullable=False)
     SSN = db.Column(db.Integer, nullable=False)
@@ -222,72 +222,6 @@ class Nurse(db.Model):
     SSN = db.Column(db.Integer, nullable=False)
     Registered = db.Column(db.Boolean, nullable=False)
 
-# # Movies database.
-# class Movie(SearchableMixin, db.Model):
-#     __searchable__ = ['name', 'genre', 'rating', 'price', 'description']
-#     id = db.Column(db.Integer, primary_key=True)
-#     name = db.Column(db.String(40))
-#     img_path = db.Column(db.String(140))
-#     description = db.Column(db.String(140))
-#     genre = db.Column(db.String(40))
-#     rating = db.Column(db.Float)
-#     price = db.Column(db.Float)
-#     quantity = db.Column(db.Integer)
-#     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-
-#     def __repr__(self):
-#         return '<Movie {} {} {} {} {}>'.format(self.id, self.name, self.genre, self.rating, self.price)
-
-#     def getName(self):
-#         return self.name
-
-#     def getDescription(self):
-#         return self.description
-    
-#     def getPrice(self):
-#         return self.price
-
-#     def getID(self):
-#         return self.id
-
-# # Orders database.
-# class Order(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-#     movie_id = db.Column(db.Integer, db.ForeignKey('movie.id'))
-#     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-#     deadline = db.Column(db.DateTime, index=True, default=(datetime.utcnow() + timedelta(days=30)))
-#     returned = db.Column(db.DateTime, default=None)
-#     status = db.Column(db.String(40))
-#     price = db.Column(db.Float)
-#     quantity = db.Column(db.Integer)
-    
-#     def __repr__(self):
-#         return '<Order {} {} {} {}>'.format(self.id, self.user_id, self.movie_id, self.timestamp)
-
-#     def getID(self):
-#         return self.id
-
-#     def getUserID(self):
-#         return self.user_id
-
-#     def getMovieID(self):
-#         return self.movie_id
-
-#     def getTimestamp(self):
-#         return self.timestamp
-    
-#     def getDeadline(self):
-#         return self.deadline
-
-#     def getReturned(self):
-#         return self.returned
-    
-#     def getStatus(self):
-#         return self.status
-    
-#     def getPrice(self):
-#         return self.price
 
     
             

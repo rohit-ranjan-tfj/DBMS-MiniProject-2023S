@@ -1,11 +1,10 @@
     <table class="table table-hover">
         <tr>
-            <td width="300px"><img width="300" height="400" src="{{ doctor.img_path }}" alt="https://previews.123rf.com/images/pavelstasevich/pavelstasevich1811/pavelstasevich181101028/112815904-.jpg"></td>
+            <td width="300px"><img width="300" height="400" src="url_for('static', filename='doctor.jpg')" alt="Image Unavailable"></td>
             <td>
                 
                 <h1>{{ doctor.Name }}</h1>
                 <p>Position : {{ doctor.Position }}</p>
-                
             </td>
         </tr>
     </table>
