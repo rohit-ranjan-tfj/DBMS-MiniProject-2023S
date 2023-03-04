@@ -13,7 +13,7 @@ On first startup, only admin user account is available.
 >Username: admin
 >Password: admin
 
-Use admin account to create accounts for front_desk operator, data_entry, operator and doctor.
+Use admin account to create accounts for front_desk operator, data_entry operator and doctor.
 Respective User Categories are front_desk, data_entry and doctor.
 ```
 ## Install and Setup Instructions
