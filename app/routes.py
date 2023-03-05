@@ -442,6 +442,12 @@ def add_user():
 
         user = User(SSN =form.SSN.data,username=form.username.data, email=form.email.data, user_cat=form.user_cat.data)
         user.set_password(form.password.data)
+        if form.user_cat.data == 'doctor':
+            existing_user = Physician.query.filter_by(SSN=form.SSN.data).first()
+            print(existing_user)
+            if existing_user is None:
+                flash('The doctor to be added has to be first added as physician')
+                return redirect(url_for('add_user'))
         try:
             db.session.add(user)
             db.session.commit()
