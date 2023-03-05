@@ -2,7 +2,7 @@
 # These forms are automatically rendered onto the webpage via wtf_forms.
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, \
-    TextAreaField, IntegerField, FloatField, DateField, TimeField, DateTimeField
+    TextAreaField, IntegerField, FloatField, DateField, TimeField, DateTimeField, SelectField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, \
     Length,NumberRange
 from app import app
@@ -23,7 +23,7 @@ class SearchForm(FlaskForm):
 
 # This is the form used to login an existing user. All stakeholders can login via the same form.
 class LoginForm(FlaskForm):
-    user_cat = StringField('User Category', validators=[DataRequired()])
+    user_cat = SelectField('User Category', choices= [ ('admin'), ('front_desk'), ('data_entry'), ('doctor')], validators=[DataRequired()])
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     remember_me = BooleanField('Remember Me')
@@ -47,7 +47,7 @@ class EmptyForm(FlaskForm):
 
 # This is the form to add a new user to the database.
 class UserForm(FlaskForm):
-    user_cat = StringField('User Category', validators=[DataRequired()])
+    user_cat = SelectField('User Category', choices=[('front_desk'), ('data_entry'), ('doctor')], validators=[DataRequired()])
     SSN = IntegerField('SSN', validators=[DataRequired()])
     username = StringField('Username', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
@@ -137,7 +137,7 @@ class AddProcedureForm(FlaskForm):
 class AddDepartmentForm(FlaskForm):
     departmentID = IntegerField('Department ID', validators=[DataRequired()])
     name = StringField('Department Name', validators=[DataRequired()])
-    head = IntegerField('Department Head', validators=[DataRequired()])
+    head = IntegerField('Department Head ID', validators=[DataRequired()])
     submit = SubmitField('Submit')
 
 class AddPhysicianForm(FlaskForm):

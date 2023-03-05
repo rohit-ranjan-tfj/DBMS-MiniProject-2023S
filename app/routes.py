@@ -121,59 +121,71 @@ def index_data_entry():
 @login_required
 def index_doctor():
     doctor = Physician.query.filter(Physician.SSN==current_user.SSN).first()
-
     if request.form.get('View my Patients') == 'View my Patients':
-        page = request.args.get('page', 1, type=int)
-        patients_1 = Prescribes.query.filter(Prescribes.Physician == doctor.EmployeeID).with_entities(Prescribes.Patient)
-        patients_2 = Patient.query.filter(Patient.PCP==doctor.EmployeeID).with_entities(Patient.SSN)
-        patients_3 = Undergoes.query.filter(Undergoes.Physician==doctor.EmployeeID).with_entities(Undergoes.Patient)
-        patients_4 = Appointment.query.filter(Appointment.Physician==doctor.EmployeeID).with_entities(Appointment.Patient)
-        patients=[]
-        for p in patients_1:
-            patients.append(p[0])
-        for p in patients_2:
-            patients.append(p[0])
-        for p in patients_3:
-            patients.append(p[0])
-        for p in patients_4:
-            patients.append(p[0])
+        if doctor is not None:
+            page = request.args.get('page', 1, type=int)
+            patients_1 = Prescribes.query.filter(Prescribes.Physician == doctor.EmployeeID).with_entities(Prescribes.Patient)
+            patients_2 = Patient.query.filter(Patient.PCP==doctor.EmployeeID).with_entities(Patient.SSN)
+            patients_3 = Undergoes.query.filter(Undergoes.Physician==doctor.EmployeeID).with_entities(Undergoes.Patient)
+            patients_4 = Appointment.query.filter(Appointment.Physician==doctor.EmployeeID).with_entities(Appointment.Patient)
+            patients=[]
+            for p in patients_1:
+                patients.append(p[0])
+            for p in patients_2:
+                patients.append(p[0])
+            for p in patients_3:
+                patients.append(p[0])
+            for p in patients_4:
+                patients.append(p[0])
 
-        patients_full = Patient.query.filter(Patient.SSN==patients[0])
-        for p in patients:
-            pp = Patient.query.filter(Patient.SSN==p)
-            patients_full.union(pp)
-        patients = patients_full
-        patients = patients.paginate(
-            page, app.config['USERS_PER_PAGE'], False)
-        next_url = url_for('explore', page=patients.next_num) \
-            if patients.has_next else None
-        prev_url = url_for('explore', page=patients.prev_num) \
-            if patients.has_prev else None
-        return render_template('index.html', title='Home', patients=patients.items,
-                            next_url=next_url, prev_url=prev_url)
+            patients_full = Patient.query.filter(Patient.SSN==patients[0])
+            for p in patients:
+                pp = Patient.query.filter(Patient.SSN==p)
+                patients_full.union(pp)
+            patients = patients_full
+            patients = patients.paginate(
+                page, app.config['USERS_PER_PAGE'], False)
+            next_url = url_for('explore', page=patients.next_num) \
+                if patients.has_next else None
+            prev_url = url_for('explore', page=patients.prev_num) \
+                if patients.has_prev else None
+            return render_template('index.html', title='Home', patients=patients.items,
+                                next_url=next_url, prev_url=prev_url)
+        else:
+            flash('No Patients to show!')
+            return redirect(url_for('index_doctor'))
     
     if request.form.get('View my Appointments') == 'View my Appointments':
         page = request.args.get('page', 1, type=int)
         appointments = Appointment.query.filter(Appointment.Physician==doctor.EmployeeID).paginate(
             page, app.config['USERS_PER_PAGE'], False)
-        next_url = url_for('explore', page=appointments.next_num) \
-            if appointments.has_next else None
-        prev_url = url_for('explore', page=appointments.prev_num) \
-            if appointments.has_prev else None
-        return render_template('index.html', title='Home', appointments=appointments.items,
-                            next_url=next_url, prev_url=prev_url)
+        if appointments is not None:
+            next_url = url_for('explore', page=appointments.next_num) \
+                if appointments.has_next else None
+            prev_url = url_for('explore', page=appointments.prev_num) \
+                if appointments.has_prev else None
+            return render_template('index.html', title='Home', appointments=appointments.items,
+                                next_url=next_url, prev_url=prev_url)
+        else:
+            flash('No Appointments to show!')
+            return redirect(url_for('index_doctor'))
     
     if request.form.get('View my Prescriptions') == 'View my Prescriptions':
         page = request.args.get('page', 1, type=int)
         prescriptions = Prescribes.query.filter(Prescribes.Physician==doctor.EmployeeID).paginate(
             page, app.config['USERS_PER_PAGE'], False)
-        next_url = url_for('explore', page=prescriptions.next_num) \
-            if prescriptions.has_next else None
-        prev_url = url_for('explore', page=prescriptions.prev_num) \
-            if prescriptions.has_prev else None
-        return render_template('index.html', title='Home', prescriptions=prescriptions.items,
-                            next_url=next_url, prev_url=prev_url)
-    
+        if prescriptions is not None:
+            next_url = url_for('explore', page=prescriptions.next_num) \
+                if prescriptions.has_next else None
+            prev_url = url_for('explore', page=prescriptions.prev_num) \
+                if prescriptions.has_prev else None
+            return render_template('index.html', title='Home', prescriptions=prescriptions.items,
+                                next_url=next_url, prev_url=prev_url)
+        else:
+            flash('No Prescriptions to show!')
+            return redirect(url_for('index_doctor'))
+
+
     if request.form.get('Query all patient information by SSN') == 'Query all patient information by SSN':
         return redirect(url_for('query_patients_ssn'))
     
@@ -250,6 +262,9 @@ def admit_patient():
         stay = Stay(StayID=form.stay.data ,Patient=form.patient.data,Room=form.room.data,Start=form.start.data)
         undergoes = Undergoes(Patient=form.patient.data ,Procedure_=form.procedure.data,Stay=form.stay.data,Date=form.start.data,Physician=form.physician.data,AssistingNurse=form.assistingNurse.data)
         room = Room.query.filter_by(Number = form.room.data).first()
+        if room is None:
+            flash('Room Number not Found.')
+            return redirect(url_for('admit_patient'))
         if(room.Unavailable == 1):
             flash('Room is unavailable!')
             return redirect(url_for('admit_patient'))
@@ -277,7 +292,8 @@ def schedule_appointment():
     if form.validate_on_submit():
         appointment = Appointment(AppointmentID = form.appointmentID.data, Patient = form.patient.data, PrepNurse = form.prepNurse.data, Physician = form.physician.data, Start = form.start.data, End = form.end.data)
         if(form.start.data < datetime.now()):
-            flash('Error, appointment has not been scheduled, date must be today or later!' + str(form.date.data) + " " + str(date.today()))
+            #flash('Error, appointment has not been scheduled, date must be today or later!' + str(form.date.data) + " " + str(date.today()))
+            flash('Error, appointment has not been scheduled, date must be today or later! Time now: ' + datetime.now().strftime("%Y %m %d %H:%M:%S"))
             return redirect(url_for('schedule_appointment'))
         if(form.start.data >= form.end.data):
             flash('Error, appointment has not been scheduled, start time must be before end time!')
@@ -426,12 +442,18 @@ def add_user():
 
         user = User(SSN =form.SSN.data,username=form.username.data, email=form.email.data, user_cat=form.user_cat.data)
         user.set_password(form.password.data)
+        if form.user_cat.data == 'doctor':
+            existing_user = Physician.query.filter_by(SSN=form.SSN.data).first()
+            print(existing_user)
+            if existing_user is None:
+                flash('The doctor to be added has to be first added as physician')
+                return redirect(url_for('add_user'))
         try:
             db.session.add(user)
             db.session.commit()
         except:
             db.session.rollback()
-            flash('Username or email already exists')
+            flash('SSN, Username or email already exists')
             return redirect(url_for('add_user'))
         flash('Congratulations, user has been added!')
         return redirect(url_for('add_user'))
@@ -474,7 +496,7 @@ def add_department():
             db.session.rollback()
             flash('Error adding department')
             return redirect(url_for('add_department'))
-        flash('Congratulations, deaprtment has been added!')
+        flash('Congratulations, department has been added!')
         return redirect(url_for('add_department'))
     return render_template('add_data.html', title='Home', form=form)
 
